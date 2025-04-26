@@ -1,12 +1,11 @@
 "use client"
 import { useState } from "react"
 import Link from "next/link"
-// import type { Metadata } from "next"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useRouter } from "next/navigation"
 
 // export const metadata: Metadata = {
 //   title: "Sign In",
@@ -17,27 +16,26 @@ export default function SignInPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
   async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault() // prevent page reload
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/auth/sign-in', {
+        method: 'POST',
         body: JSON.stringify({ email, password }),
-      })
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      const data = await res.json();
 
-      const data = await res.json()
-      console.log(data)
-
-      if (res.ok) {
-        // Handle successful sign-in (e.g., redirect to dashboard)
-        alert("Sign-in successful!")
-      } else {
-        // Handle errors (e.g., show error message)
-        alert(data.message || "Something went wrong")
-      }
+      console.log(data.role)
+      
+      if (data.role === 'businessAdmin') {
+        router.push('/business-profile-registration');
+      } 
     } catch (error) {
       console.error(error)
       alert("Something went wrong. Please try again later.")
@@ -73,9 +71,8 @@ export default function SignInPage() {
             <Input id="password" value={password} type="password" required  onChange={(e) => setPassword(e.target.value)}/>
           </div>
         </CardContent>
-        </form>
         <CardFooter className="flex flex-col space-y-4">
-          <Button className="w-full"> {loading ? 'loading...' : 'sign in'}</Button>
+          <Button className="w-full my-4" type="submit" disabled={loading}> {loading ? 'loading...' : 'sign in'}</Button>
           <div className="text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/auth/sign-up" className="font-medium text-primary underline-offset-4 hover:underline">
@@ -83,6 +80,7 @@ export default function SignInPage() {
             </Link>
           </div>
         </CardFooter>
+        </form>
       </Card>
     </div>
   )
