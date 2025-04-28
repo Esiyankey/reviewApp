@@ -36,7 +36,7 @@ export default function SignUpPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password,role }),
       });
 
       const data = await res.json();
@@ -49,6 +49,7 @@ export default function SignUpPage() {
         setName("");
         setEmail("");
         setPassword("");
+        setRole("customer"); // Reset role to default
       } else {
         // Handle errors
         alert(data.message || "Something went wrong");

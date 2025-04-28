@@ -4,9 +4,9 @@ import supabase from '@/lib/supabaseServerClient'; // same lib setup
 
 export async function POST(req) {
   const body = await req.json();
-  const { email, password, name } = body;
+  const { email, password, name,role } = body;
 
-  if (!email || !password || !name) {
+  if (!email || !password || !name || role) {
     return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
   }
 
@@ -27,7 +27,7 @@ export async function POST(req) {
         id: data.user.id,
         name,
         email,
-        role:"businessAdmin",
+        role,
       });
       
       if (insertError) {
