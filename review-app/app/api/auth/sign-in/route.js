@@ -1,43 +1,42 @@
-import { NextResponse } from 'next/server';
-import supabase from '@/lib/supabaseServerClient'; 
+import { NextResponse } from "next/server";
+import supabase from "@/lib/supabaseServerClient";
+
 
 export async function POST(req) {
-  const body = await req.json();
-  const { email, password } = body;
-
-  if (!email || !password) {
-    return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
-  }
-
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const body = await req.json();
+    const { email, password } = body;
 
-    if (error) {
-      throw error;
+    // Validate input fields
+    if (!email || !password) {
+      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
 
-    // No need to call getUser again! We have data.user already
-    const { data: user, error: roleError } = await supabase
-      .from('usersTable')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
+    // Attempt to sign in the user
+    const { data: authData, error: authError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (roleError) {
-      throw roleError;
+    if (authError) {
+      return NextResponse.json({ message: authError.message }, { status: 401 });
     }
 
-    return NextResponse.json({
-      message: 'User signed in',
-      user: data.user,
-      role: user?.role, // Include role here
-    }, { status: 200 });
+    // Return success response with user and role
+    return NextResponse.json(
+      {
+        message: "User signed in",
+        user: authData.user,
+      },
+      { status: 200 }
+    );
 
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    console.error("Error during sign-in:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
