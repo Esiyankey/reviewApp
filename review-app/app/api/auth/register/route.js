@@ -15,7 +15,7 @@ export async function POST(req) {
       email,
       password,
       email_confirm: true,
-      user_metadata: { name },
+      user_metadata: { name,role },
     });
 
     if (error) {
