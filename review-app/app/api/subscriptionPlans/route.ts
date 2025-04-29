@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import supabase from "@/lib/supabaseServerClient";
 
-export  const fetchSubscriptionPlans = async () => {
+export async function GET() {
   try {
     const { data, error } = await supabase
       .from("subscriptionPlanTable")
