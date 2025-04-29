@@ -80,7 +80,7 @@ export default function SignInPage() {
         if (roleResponse.ok) {
           const role = roleData.role;
   
-          if (role === "businessAdmin") {
+          if (role === "business_admin") {
             router.push("/business/business-profile-registration");
           } else {
             // redirect somewhere else if needed
