@@ -10,6 +10,7 @@ import React from "react";
 
 export default function SubscriptionPage() {
   interface SubscriptionPlan {
+    id:string;
     plan_name: string;
     price: string;
     duration: string;
@@ -41,6 +42,27 @@ export default function SubscriptionPage() {
     fetchSubscriptionPlans();
   }, []);
 
+
+  
+
+
+  const handleSubscriptionCreation = async (planId:string) => {
+    try {
+      const response = await fetch("/api/subcription_creation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({planId}),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create subscription");
+      }
+      const data = await response.json();
+      console.log("Subscription created successfully:", data);
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+    }
+  }
+
   return (
     <>
       <CardContent className="space-y-6">
@@ -67,10 +89,11 @@ export default function SubscriptionPage() {
                           <div
                             key={plan.plan_name}
                             className="flex items-start space-x-2 rounded-md border p-4  w-full"
+                            onClick={() => handleSubscriptionCreation(plan.id)}
                           >
                             <RadioGroupItem
                               value={plan.plan_name}
-                              id={plan.plan_name}
+                              id={plan.id}
                             />
                             <div className="flex flex-col space-y-1">
                               <Label
