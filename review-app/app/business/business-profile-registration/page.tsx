@@ -1,12 +1,7 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
-import {
-  Star,
-  ArrowLeft,
-  FileText,
-  CreditCard,
-  Calendar,
-} from "lucide-react";
+import { Star, ArrowLeft, FileText, CreditCard, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,15 +14,57 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
 
+import { createBrowserClient } from '@supabase/ssr';
 
+const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 
 export default function RegisterBusinessPage() {
+  const [businessName, setBusinessName] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading,setLoading] = useState(false);
 
+  const router = useRouter();
 
   const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/business/business_information", {
+        method: "POST",
+        headers: { "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+         },
+        
+        body: JSON.stringify({
+          business_name: businessName,
+          description: description,
+          // Add other fields as needed
+        }),
+      });
+     
+     
+      if (res.ok) {
+        alert("Business registered successfully!");
+        setBusinessName("");
+        setDescription("");
+        const data = await res.json();
+        console.log("Business registered:", data);
+        router.push("/business/business-profile-registration-continuation"); 
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred while submitting the form. Please try again.");
+      setLoading(false);
+    }
+
     
-    console.log("Form submitted");
   };
   return (
     <div className="flex min-h-screen flex-col">
@@ -103,6 +140,8 @@ export default function RegisterBusinessPage() {
                     id="businessName"
                     placeholder="Enter your business name"
                     required
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
                   />
                 </div>
 
@@ -113,18 +152,18 @@ export default function RegisterBusinessPage() {
                     placeholder="Describe your business"
                     className="min-h-[120px]"
                     required
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
-
-                
-
-                
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="flex items-center space-x-2 rounded-md border p-4">
                     <FileText className="h-5 w-5 text-muted-foreground" />
                     <div className="space-y-0.5">
-                      <p className="text-sm font-medium">Business Information</p>
+                      <p className="text-sm font-medium">
+                        Business Information
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         Your business details will be visible to customers.
                       </p>
@@ -153,10 +192,17 @@ export default function RegisterBusinessPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <span>All data filled here will be saved make sure you provided the right data</span>
-              <Button className="w-full bg-primary hover:bg-primary/90" onClick={handleSubmit}>
-                Continue to Subscription
-              </Button>
+              <span>
+                All data filled here will be saved make sure you provided the
+                right data
+              </span>
+                <Button
+                className="w-full bg-primary hover:bg-primary/90"
+                onClick={handleSubmit}
+                disabled={loading}
+                >
+                {loading ? "Loading..." : "Continue to Subscription"}
+                </Button>
               <p className="text-center text-sm text-muted-foreground">
                 By registering, you agree to our{" "}
                 <Link href="/terms" className="text-primary hover:underline">
