@@ -19,6 +19,9 @@ export async function POST(req) {
         password,
       });
 
+
+      
+
     if (authError) {
       return NextResponse.json({ message: authError.message }, { status: 401 });
     }

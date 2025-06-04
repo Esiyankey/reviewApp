@@ -21,73 +21,49 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await fetch("/api/auth/sign-in", {
-  //       method: "POST",
-  //       body: JSON.stringify({ email, password }),
-  //       headers: { "Content-Type": "application/json" },
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       router.push("/business/business-profile-registration");
-  //       alert("Sign in successful! Redirecting to your dashboard..."); 
-  //       return;
-  //     }
-  //     else {
-  //       alert(data.message || "Something went wrong. Please try again.");
-  //     }
-
-    
-
-  //   } catch (error) {
-  //     console.error("Error during sign-in:", error);
-  //     alert("Something went wrong. Please try again later.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
       const response = await fetch("/api/auth/sign-in", {
         method: "POST",
         body: JSON.stringify({ email, password }),
         headers: { "Content-Type": "application/json" },
       });
-  
+
       const data = await response.json();
-  
+
+      
       if (response.ok) {
-        const userId = data.user.id;
+        const accessToken = data.session?.accessToken;
+        const refreshToken = data.session?.refreshToken;
   
+        console.log("JWT Access Token:", accessToken);
+        console.log("Refresh Token:", refreshToken);
+        const userId = data.user.id;
+
         // Now fetch the user's role from usersTable
         const roleResponse = await fetch(`/api/auth/get_role`, {
           method: "POST",
           body: JSON.stringify({ userId }),
           headers: { "Content-Type": "application/json" },
         });
-  
+
         const roleData = await roleResponse.json();
-  
+
         if (roleResponse.ok) {
           const role = roleData.role;
-  
+
           if (role === "business_admin") {
             router.push("/business/business-profile-registration");
           } else {
             // redirect somewhere else if needed
             router.push("/");
           }
-  
+
           alert("Sign in successful! Redirecting...");
+          console.log("User ID received:", data.user?.id);
         } else {
           alert(roleData.message || "Failed to fetch user role.");
         }
@@ -101,7 +77,7 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">

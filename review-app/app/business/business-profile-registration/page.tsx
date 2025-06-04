@@ -15,57 +15,62 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 
-import { createBrowserClient } from '@supabase/ssr';
-
-const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
-const {
-  data: { session },
-} = await supabase.auth.getSession();
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function RegisterBusinessPage() {
   const [businessName, setBusinessName] = useState("");
   const [description, setDescription] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async () => {
+    if (!businessName || !description) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
     try {
       setLoading(true);
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data?.session?.access_token;
+
       const res = await fetch("/api/business/business_information", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
-         },
-        
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           business_name: businessName,
           description: description,
-          // Add other fields as needed
         }),
       });
-     
-     
+
       if (res.ok) {
-        alert("Business registered successfully!");
-        setBusinessName("");
-        setDescription("");
         const data = await res.json();
         console.log("Business registered:", data);
-        router.push("/business/business-profile-registration-continuation"); 
+        alert("Business registered successfully!");
+        router.push("/business/business-profile-registration-continuation");
+      } else {
+        const errorData = await res
+          .json()
+          .catch(() => ({ message: "Unknown error" }));
+        console.error("Registration failed:", res.status, errorData);
       }
-      
-      setLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("An error occurred while submitting the form. Please try again.");
+    } finally {
       setLoading(false);
     }
-
-    
   };
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b bg-background">
@@ -101,15 +106,17 @@ export default function RegisterBusinessPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link
-              href="/login"
-              className="text-sm font-medium hover:text-primary"
-            >
-              Login
-            </Link>
-            <Button asChild>
-              <Link href="/register">Get Started</Link>
-            </Button>
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-medium hover:text-primary"
+              >
+                Login
+              </Link>
+              <Button asChild>
+                <Link href="/register">Get Started</Link>
+              </Button>
+            </>
           </div>
         </div>
       </header>
@@ -193,16 +200,16 @@ export default function RegisterBusinessPage() {
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <span>
-                All data filled here will be saved make sure you provided the
-                right data
+                All data filled here will be saved. Make sure you provided the
+                right data.
               </span>
-                <Button
+              <Button
                 className="w-full bg-primary hover:bg-primary/90"
                 onClick={handleSubmit}
                 disabled={loading}
-                >
+              >
                 {loading ? "Loading..." : "Continue to Subscription"}
-                </Button>
+              </Button>
               <p className="text-center text-sm text-muted-foreground">
                 By registering, you agree to our{" "}
                 <Link href="/terms" className="text-primary hover:underline">
