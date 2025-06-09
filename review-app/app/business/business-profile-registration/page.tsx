@@ -108,7 +108,7 @@ export default function RegisterBusinessPage() {
           <div className="flex items-center gap-4">
             <>
               <Link
-                href="/login"
+                href="/auth/login"
                 className="text-sm font-medium hover:text-primary"
               >
                 Login

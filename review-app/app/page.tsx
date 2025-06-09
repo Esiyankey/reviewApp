@@ -35,7 +35,7 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium hover:text-primary">
+            <Link href="/auth/login" className="text-sm font-medium hover:text-primary">
               Login
             </Link>
             <Button asChild>
