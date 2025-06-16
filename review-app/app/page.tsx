@@ -61,7 +61,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                    <Link href="/auth/sign-up">Register Business</Link>
+                    <Link href="/business/business-profile-registration">Register Business</Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
                     <Link href="/businesses">View Businesses</Link>
