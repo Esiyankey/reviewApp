@@ -17,7 +17,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-40 border-b bg-background">
         <div className="container flex h-16 items-center justify-between py-4">
           <div className="flex items-center gap-2">
-            <Star className="h-6 w-6 text-primary" />
+            <Star className="h-6 w-6 text-primary"/>
             <span className="text-xl font-bold">ReviewPulse</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
@@ -39,7 +39,7 @@ export default function LandingPage() {
               Login
             </Link>
             <Button asChild>
-              <Link href="/business/business-profile-registration">Get Started</Link>
+              <Link href="/business/business-profile-registration">Register Business</Link>
             </Button>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                    <Link href="/auth/sign-up">Get Started</Link>
+                    <Link href="/auth/sign-up">Register Business</Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
                     <Link href="/businesses">View Businesses</Link>
