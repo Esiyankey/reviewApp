@@ -2,7 +2,6 @@ import Link from "next/link"
 import Image from "next/image"
 import type { Metadata } from "next"
 import { Star, QrCode, BarChart3, Building2, Users, ArrowRight, CheckCircle2 } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -11,39 +10,11 @@ export const metadata: Metadata = {
   description: "Manage your business review platform",
 }
 
-export default function LandingPage() {
+export default function LandingPage() { 
+
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <Star className="h-6 w-6 text-primary"/>
-            <span className="text-xl font-bold">ReviewPulse</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="#features" className="text-sm font-medium hover:text-primary">
-              Features
-            </Link>
-            <Link href="#how-it-works" className="text-sm font-medium hover:text-primary">
-              How It Works
-            </Link>
-            <Link href="#pricing" className="text-sm font-medium hover:text-primary">
-              Pricing
-            </Link>
-            <Link href="/businesses" className="text-sm font-medium hover:text-primary">
-              Businesses
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/auth/login" className="text-sm font-medium hover:text-primary">
-              Login
-            </Link>
-            <Button asChild>
-              <Link href="/business/business-profile-registration">Register Business</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+     
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
@@ -61,11 +32,11 @@ export default function LandingPage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                    <Link href="/business/business-profile-registration">Register Business</Link>
+                    <Link href="/business">Business Dashboard</Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline">
+                  {/* <Button asChild size="lg" variant="outline">
                     <Link href="/businesses">View Businesses</Link>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
               <div className="flex items-center justify-center">
