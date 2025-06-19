@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Link from 'next/link'
 import {Star} from 'lucide-react'
@@ -6,7 +7,7 @@ import { createClient } from '@/lib/client'
 import {toast } from "sonner"
 
 
-export const navbar = () => {
+export const Navbar = () => {
 
  const handleSignOut = async () => {
     const supabase = createClient()
