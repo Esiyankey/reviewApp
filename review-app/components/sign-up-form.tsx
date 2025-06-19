@@ -64,6 +64,8 @@ export function SignUpForm({
         {
           id: userData?.user?.id,
           email: email,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
       ]);
 
