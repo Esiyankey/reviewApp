@@ -50,29 +50,11 @@ export function SignUpForm({
         },
       });
 
-      router.push("/auth/sign-up-success");
-
+      
       if (error) throw error;
-
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
-      if (userError) throw userError;
-
-      console.log("User ID:", userData?.user?.id); // 👈 log it
-
-      const { error: insertError } = await supabase.from("User").insert([
-        {
-          id: userData?.user?.id,
-          email: email,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ]);
-
-      if (insertError) {
-        console.error("Insert Error:", insertError.message); // 👈 log error
-        throw new Error("Database error saving new user");
-      }
+      
+      
+      router.push("/auth/sign-up-success");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {

@@ -38,7 +38,10 @@ export default function ConfirmPage() {
     };
 
     verifyEmail();
+    
   }, [supabase,router]);
 
+
+  
   return <p>{message}</p>;
 }
