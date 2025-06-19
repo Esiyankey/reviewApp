@@ -50,13 +50,15 @@ export function SignUpForm({
         },
       });
 
-      if (error) throw error;
-
       router.push("/auth/sign-up-success");
+
+      if (error) throw error;
 
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
       if (userError) throw userError;
+
+      console.log("User ID:", userData?.user?.id); // 👈 log it
 
       const { error: insertError } = await supabase.from("User").insert([
         {
@@ -66,9 +68,8 @@ export function SignUpForm({
       ]);
 
       if (insertError) {
-        console.error("Insert error:", insertError.message);
-        setError("Failed to save user profile.");
-        return;
+        console.error("Insert Error:", insertError.message); // 👈 log error
+        throw new Error("Database error saving new user");
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
