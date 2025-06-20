@@ -2,11 +2,13 @@ import { NextResponse } from 'next/server';
 import supabase from '@/lib/supabaseServerClient'; 
 
 export async function POST(req) {
+    
+
     try {
         const body = await req.json();
         const {subscription,qr_code,business_id} = body;
 
-        const {data,error} = await supabase.from("businessTable").update({
+        const {data,error} = await supabase.from("Business").update({
             subscription: subscription,
             qr_code: qr_code,
             updated_at: new Date().toISOString(),

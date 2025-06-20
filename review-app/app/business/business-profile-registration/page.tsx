@@ -23,31 +23,35 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function RegisterBusinessPage() {
-  const [businessName, setBusinessName] = useState("");
+  const [business_name, setBusiness_name] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (!businessName || !description) {
+    if (!business_name || !description) {
       alert("Please fill in all required fields");
       return;
     }
 
     try {
       setLoading(true);
-      const { data } = await supabase.auth.getSession();
-      const accessToken = data?.session?.access_token;
-
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      if (!accessToken) {
+        alert("You must be logged in to register a business.");
+        router.push("/auth/login");
+        return;
+      }
       const res = await fetch("/api/business/business_information", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          business_name: businessName,
+          business_name: business_name,
           description: description,
         }),
       });
@@ -142,13 +146,13 @@ export default function RegisterBusinessPage() {
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="businessName">Business Name</Label>
+                  <Label htmlFor="business_name">Business Name</Label>
                   <Input
-                    id="businessName"
+                    id="business_name"
                     placeholder="Enter your business name"
                     required
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
+                    value={business_name}
+                    onChange={(e) => setBusiness_name(e.target.value)}
                   />
                 </div>
 

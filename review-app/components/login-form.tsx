@@ -35,6 +35,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         password,
       })
       if (error) throw error
+      await supabase.auth.getSession();
       router.push('/business')
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
