@@ -15,12 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+// import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+
+
+
 
 export default function RegisterBusinessPage() {
   const [business_name, setBusiness_name] = useState("");
@@ -37,18 +37,11 @@ export default function RegisterBusinessPage() {
 
     try {
       setLoading(true);
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData?.session?.access_token;
-      if (!accessToken) {
-        alert("You must be logged in to register a business.");
-        router.push("/auth/login");
-        return;
-      }
+      
       const res = await fetch("/api/business/business_information", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           business_name: business_name,
