@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
 
-export async function getUserFromToken(req) {
+export async function getUserFromToken(token: string) {
  
   try {
     const authHeader = req.headers.authorization;
